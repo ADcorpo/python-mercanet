@@ -6,6 +6,9 @@ Mercanet's POST api
 import hashlib
 
 
+class MercanetDecodeError(Exception):
+    pass
+
 class MercanetPayload(object):
     """
     Represents a Mercanet payload. Storing of parameters inside the
@@ -76,8 +79,7 @@ class MercanetPayload(object):
         digestor.update(str.encode(self._secret_key))
 
         if digestor.hexdigest() != payload["Seal"]:
-            # TODO: implement specific Exception
-            raise Exception
+            raise MercanetDecodeError("Seals do not match")
         else:
             for element in payload["Data"].split("|"):
                 element = element.split("=")
